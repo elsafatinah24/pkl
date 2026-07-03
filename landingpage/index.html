@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistem Pemesanan Bakso</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">Warung Bakso Online</p>
+        <h1>Sistem Pemesanan Bakso</h1>
+      </div>
+      <nav class="top-actions" aria-label="Navigasi utama">
+        <button class="nav-btn active" data-view="menu" type="button">Menu</button>
+        <button class="nav-btn" data-view="orders" type="button">Pesanan</button>
+        <button class="nav-btn" data-view="admin" type="button">Admin</button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero-strip" aria-label="Sorotan warung">
+        <img
+          src="assets/hero-bakso.svg"
+          alt="Ilustrasi mangkuk bakso dengan kuah panas"
+        />
+        <div class="hero-copy">
+          <p>Pesanan cepat, catatan jelas, antrean dapur rapi.</p>
+          <strong id="heroTotal">0 pesanan aktif</strong>
+        </div>
+      </section>
+
+      <section class="view active" id="menuView" aria-labelledby="menuTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Pelanggan</p>
+            <h2 id="menuTitle">Pilih Bakso</h2>
+          </div>
+          <div class="search-wrap">
+            <input id="searchInput" type="search" placeholder="Cari menu" aria-label="Cari menu" />
+          </div>
+        </div>
+
+        <div class="category-tabs" id="categoryTabs" aria-label="Filter kategori"></div>
+
+        <div class="workspace-grid">
+          <div class="menu-grid" id="menuGrid" aria-live="polite"></div>
+
+          <aside class="cart-panel" aria-labelledby="cartTitle">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Keranjang</p>
+                <h2 id="cartTitle">Pesanan Baru</h2>
+              </div>
+              <button class="icon-btn" id="clearCartBtn" type="button" title="Kosongkan keranjang">X</button>
+            </div>
+
+            <div class="cart-items" id="cartItems"></div>
+
+            <form class="checkout-form" id="checkoutForm">
+              <label>
+                Nama pelanggan
+                <input id="customerName" type="text" placeholder="Contoh: Rani" required />
+              </label>
+
+              <label>
+                Jenis layanan
+                <select id="serviceType">
+                  <option value="Dine-in">Dine-in</option>
+                  <option value="Takeaway">Takeaway</option>
+                  <option value="Delivery">Delivery</option>
+                </select>
+              </label>
+
+              <label>
+                Nomor meja / alamat
+                <input id="serviceDetail" type="text" placeholder="Meja 04 atau alamat" required />
+              </label>
+
+              <label>
+                Metode pembayaran
+                <select id="paymentMethod">
+                  <option value="Tunai">Tunai</option>
+                  <option value="QRIS">QRIS</option>
+                  <option value="Transfer">Transfer</option>
+                </select>
+              </label>
+
+              <div class="total-row">
+                <span>Total</span>
+                <strong id="cartTotal">Rp0</strong>
+              </div>
+
+              <button class="primary-btn" type="submit">Checkout</button>
+            </form>
+          </aside>
+        </div>
+      </section>
+
+      <section class="view" id="ordersView" aria-labelledby="ordersTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Pelanggan</p>
+            <h2 id="ordersTitle">Status Pesanan</h2>
+          </div>
+        </div>
+        <div class="order-list" id="customerOrders"></div>
+      </section>
+
+      <section class="view" id="adminView" aria-labelledby="adminTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Admin dan Dapur</p>
+            <h2 id="adminTitle">Dashboard Pesanan</h2>
+          </div>
+          <button class="secondary-btn" id="seedOrderBtn" type="button">Tambah Contoh Pesanan</button>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-box">
+            <span>Pesanan</span>
+            <strong id="statOrders">0</strong>
+          </div>
+          <div class="stat-box">
+            <span>Omzet</span>
+            <strong id="statRevenue">Rp0</strong>
+          </div>
+          <div class="stat-box">
+            <span>Menu Terlaris</span>
+            <strong id="statBestSeller">-</strong>
+          </div>
+        </div>
+
+        <div class="admin-layout">
+          <section class="admin-section" aria-labelledby="queueTitle">
+            <h3 id="queueTitle">Antrean Dapur</h3>
+            <div class="order-list" id="adminOrders"></div>
+          </section>
+
+          <section class="admin-section" aria-labelledby="stockTitle">
+            <h3 id="stockTitle">Stok Menu</h3>
+            <div class="stock-list" id="stockList"></div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <template id="menuCardTemplate">
+      <article class="menu-card">
+        <img alt="" />
+        <div class="menu-card-body">
+          <div class="menu-title-row">
+            <h3></h3>
+            <span class="price"></span>
+          </div>
+          <p class="description"></p>
+          <div class="meta-row"></div>
+
+          <label>
+            Level pedas
+            <select class="spice-select">
+              <option value="Original">Original</option>
+              <option value="Sedang">Sedang</option>
+              <option value="Pedas">Pedas</option>
+              <option value="Mercon">Mercon</option>
+            </select>
+          </label>
+
+          <label>
+            Topping
+            <select class="topping-select">
+              <option value="Tanpa topping" data-price="0">Tanpa topping</option>
+              <option value="Pangsit" data-price="3000">Pangsit + Rp3.000</option>
+              <option value="Tahu bakso" data-price="4000">Tahu bakso + Rp4.000</option>
+              <option value="Tetelan" data-price="6000">Tetelan + Rp6.000</option>
+              <option value="Ekstra bakso" data-price="7000">Ekstra bakso + Rp7.000</option>
+            </select>
+          </label>
+
+          <label>
+            Catatan
+            <input class="note-input" type="text" placeholder="Kuah dipisah, tanpa seledri" />
+          </label>
+
+          <button class="primary-btn add-btn" type="button">Tambah</button>
+        </div>
+      </article>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>

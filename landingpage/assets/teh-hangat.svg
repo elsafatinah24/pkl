@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 520" role="img" aria-labelledby="title">
+  <title id="title">Teh hangat</title>
+  <rect width="520" height="520" fill="#f4efe6"/>
+  <ellipse cx="260" cy="400" rx="115" ry="26" fill="#3a2b18" opacity=".14"/>
+  <path d="M158 192h205c-8 91-48 148-103 148s-94-57-102-148Z" fill="#ffffff" stroke="#d8ddd6" stroke-width="10"/>
+  <ellipse cx="260" cy="192" rx="108" ry="38" fill="#fffdfa" stroke="#d8ddd6" stroke-width="10"/>
+  <ellipse cx="260" cy="193" rx="82" ry="24" fill="#9c6129"/>
+  <path d="M362 218c60-7 72 74 8 78" fill="none" stroke="#d8ddd6" stroke-width="16" stroke-linecap="round"/>
+  <path d="M217 133c-18-30 20-38 0-65M265 129c-18-30 20-38 0-65M313 133c-18-30 20-38 0-65" fill="none" stroke="#9c6129" stroke-width="10" stroke-linecap="round" opacity=".55"/>
+</svg>

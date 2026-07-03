@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 520" role="img" aria-labelledby="title">
+  <title id="title">Mie ayam bakso</title>
+  <rect width="520" height="520" fill="#f6f0dd"/>
+  <ellipse cx="260" cy="390" rx="185" ry="38" fill="#3a2b18" opacity=".14"/>
+  <path d="M97 214h326c-8 115-62 177-163 177S105 329 97 214Z" fill="#ffffff" stroke="#ddd6c3" stroke-width="10"/>
+  <ellipse cx="260" cy="214" rx="180" ry="62" fill="#fbfbf6" stroke="#ddd6c3" stroke-width="10"/>
+  <ellipse cx="260" cy="216" rx="142" ry="41" fill="#b9773d"/>
+  <g fill="none" stroke="#f1ce5d" stroke-width="12" stroke-linecap="round">
+    <path d="M130 203c56-36 102 29 162-8 42-26 78-18 111 5"/>
+    <path d="M139 231c73-30 133 28 226-8"/>
+    <path d="M175 256c58 11 123 2 169-20"/>
+  </g>
+  <g fill="#7a5036" stroke="#4d2d1f" stroke-width="5">
+    <circle cx="336" cy="172" r="35"/>
+    <circle cx="384" cy="210" r="29"/>
+  </g>
+  <g fill="#8f5a2d">
+    <rect x="151" y="158" width="64" height="31" rx="8" transform="rotate(-11 183 173)"/>
+    <rect x="216" y="145" width="57" height="30" rx="8" transform="rotate(13 244 160)"/>
+  </g>
+  <g fill="#3f8c57">
+    <ellipse cx="145" cy="220" rx="21" ry="8" transform="rotate(-24 145 220)"/>
+    <ellipse cx="304" cy="149" rx="22" ry="9" transform="rotate(24 304 149)"/>
+  </g>
+</svg>

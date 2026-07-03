@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 520" role="img" aria-labelledby="title">
+  <title id="title">Bakso urat</title>
+  <rect width="520" height="520" fill="#f4efe6"/>
+  <circle cx="395" cy="103" r="86" fill="#f4b740" opacity=".35"/>
+  <ellipse cx="260" cy="390" rx="185" ry="38" fill="#342018" opacity=".16"/>
+  <path d="M95 210h330c-6 117-58 181-165 181S101 327 95 210Z" fill="#ffffff" stroke="#d4ddd6" stroke-width="10"/>
+  <ellipse cx="260" cy="210" rx="180" ry="62" fill="#fbfbf6" stroke="#d4ddd6" stroke-width="10"/>
+  <ellipse cx="260" cy="211" rx="143" ry="40" fill="#bd7b43"/>
+  <g fill="#7a5036" stroke="#4d2d1f" stroke-width="6">
+    <circle cx="177" cy="186" r="42"/>
+    <circle cx="264" cy="173" r="39"/>
+    <circle cx="342" cy="194" r="42"/>
+  </g>
+  <g fill="none" stroke="#f5d46a" stroke-width="10" stroke-linecap="round">
+    <path d="M148 230c60-33 120 26 187-7"/>
+    <path d="M181 251c56 14 114 10 162-15"/>
+  </g>
+  <path d="M138 197c24-10 38 7 59-7" fill="none" stroke="#a97857" stroke-width="7" stroke-linecap="round"/>
+  <path d="M244 166c23-10 37 7 58-7" fill="none" stroke="#a97857" stroke-width="7" stroke-linecap="round"/>
+  <g fill="#3f8c57">
+    <ellipse cx="134" cy="213" rx="23" ry="9" transform="rotate(-24 134 213)"/>
+    <ellipse cx="353" cy="159" rx="22" ry="9" transform="rotate(24 353 159)"/>
+  </g>
+</svg>

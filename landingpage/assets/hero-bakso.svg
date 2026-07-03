@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+  <title id="title">Ilustrasi bakso hero</title>
+  <desc id="desc">Mangkuk besar berisi bakso, mie, tahu, pangsit, dan kuah panas.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#7f2416"/>
+      <stop offset="0.52" stop-color="#c23b22"/>
+      <stop offset="1" stop-color="#f4a52c"/>
+    </linearGradient>
+    <linearGradient id="bowl" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#dfe7df"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="420" fill="url(#bg)"/>
+  <circle cx="1060" cy="70" r="150" fill="#ffd77d" opacity=".32"/>
+  <circle cx="165" cy="335" r="210" fill="#1d2528" opacity=".22"/>
+  <g transform="translate(445 75)">
+    <ellipse cx="165" cy="250" rx="315" ry="54" fill="#35140d" opacity=".28"/>
+    <path d="M-115 132h560c-8 139-92 215-280 215S-107 271-115 132Z" fill="url(#bowl)"/>
+    <ellipse cx="165" cy="132" rx="295" ry="82" fill="#f9fbf6"/>
+    <ellipse cx="165" cy="132" rx="250" ry="58" fill="#bf7f45"/>
+    <path d="M-54 120c98 54 303 54 438 0" fill="none" stroke="#f1c075" stroke-width="16" stroke-linecap="round"/>
+    <g fill="#795036" stroke="#4c2c1d" stroke-width="5">
+      <circle cx="58" cy="98" r="47"/>
+      <circle cx="158" cy="83" r="43"/>
+      <circle cx="258" cy="101" r="49"/>
+      <circle cx="350" cy="132" r="38"/>
+      <circle cx="95" cy="157" r="36"/>
+    </g>
+    <path d="M-10 143c70-42 143 42 222 1 64-34 111-14 163 11" fill="none" stroke="#f2d164" stroke-width="13" stroke-linecap="round"/>
+    <path d="M44 175c88-18 165 32 270-15" fill="none" stroke="#f6df84" stroke-width="11" stroke-linecap="round"/>
+    <g fill="#3e8f57">
+      <ellipse cx="24" cy="126" rx="26" ry="11" transform="rotate(-20 24 126)"/>
+      <ellipse cx="309" cy="74" rx="28" ry="10" transform="rotate(26 309 74)"/>
+      <ellipse cx="217" cy="169" rx="24" ry="9" transform="rotate(-18 217 169)"/>
+    </g>
+    <path d="M372 68l74 28-47 44-75-27Z" fill="#f4d6a2" stroke="#9f6a36" stroke-width="5"/>
+    <path d="M-27 83l70-31 26 58-75 31Z" fill="#eec179" stroke="#9f6a36" stroke-width="5"/>
+    <g fill="none" stroke="#ffffff" stroke-width="11" stroke-linecap="round" opacity=".55">
+      <path d="M88 33c-20-35 23-42 1-75"/>
+      <path d="M210 28c-18-33 26-45 4-77"/>
+      <path d="M321 39c-19-33 20-39 0-69"/>
+    </g>
+  </g>
+</svg>

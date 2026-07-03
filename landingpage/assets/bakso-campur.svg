@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 520" role="img" aria-labelledby="title">
+  <title id="title">Bakso campur</title>
+  <rect width="520" height="520" fill="#f2f3ed"/>
+  <ellipse cx="260" cy="390" rx="185" ry="38" fill="#23302a" opacity=".13"/>
+  <path d="M94 214h332c-7 116-60 178-166 178S101 330 94 214Z" fill="#ffffff" stroke="#d4ddd6" stroke-width="10"/>
+  <ellipse cx="260" cy="214" rx="182" ry="64" fill="#fbfbf6" stroke="#d4ddd6" stroke-width="10"/>
+  <ellipse cx="260" cy="215" rx="145" ry="42" fill="#bd7b43"/>
+  <g fill="#7a5036" stroke="#4d2d1f" stroke-width="5">
+    <circle cx="161" cy="195" r="35"/>
+    <circle cx="230" cy="173" r="37"/>
+    <circle cx="306" cy="184" r="36"/>
+    <circle cx="365" cy="222" r="31"/>
+  </g>
+  <path d="M105 190l60-27 24 53-64 26Z" fill="#efcf94" stroke="#9f6a36" stroke-width="5"/>
+  <path d="M350 155l62 24-39 43-64-24Z" fill="#f2d39c" stroke="#9f6a36" stroke-width="5"/>
+  <path d="M145 242c68-34 126 34 218-7" fill="none" stroke="#f6d96d" stroke-width="11" stroke-linecap="round"/>
+  <path d="M186 263c58 11 116 4 164-18" fill="none" stroke="#f6d96d" stroke-width="9" stroke-linecap="round"/>
+  <g fill="#3f8c57">
+    <ellipse cx="138" cy="216" rx="21" ry="8" transform="rotate(-24 138 216)"/>
+    <ellipse cx="334" cy="150" rx="22" ry="9" transform="rotate(24 334 150)"/>
+    <ellipse cx="252" cy="238" rx="20" ry="8" transform="rotate(-12 252 238)"/>
+  </g>
+</svg>

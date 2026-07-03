@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 520" role="img" aria-labelledby="title">
+  <title id="title">Es jeruk</title>
+  <rect width="520" height="520" fill="#fff2df"/>
+  <ellipse cx="260" cy="420" rx="100" ry="22" fill="#3a2b18" opacity=".14"/>
+  <path d="M180 112h160l-22 291H202Z" fill="#f8fbff" stroke="#b9cad4" stroke-width="9"/>
+  <path d="M196 205h128l-14 178H210Z" fill="#f6a31b" opacity=".9"/>
+  <g fill="#e8f6ff" stroke="#b9cad4" stroke-width="5">
+    <rect x="211" y="137" width="38" height="34" rx="8" transform="rotate(-14 230 154)"/>
+    <rect x="267" y="150" width="38" height="34" rx="8" transform="rotate(10 286 167)"/>
+  </g>
+  <circle cx="357" cy="116" r="45" fill="#f7b733" stroke="#d47b17" stroke-width="8"/>
+  <circle cx="357" cy="116" r="24" fill="none" stroke="#fff0ad" stroke-width="7"/>
+  <path d="M331 90l52 52M383 90l-52 52" stroke="#fff0ad" stroke-width="6" stroke-linecap="round"/>
+</svg>

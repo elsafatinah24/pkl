@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 520" role="img" aria-labelledby="title">
+  <title id="title">Air mineral</title>
+  <rect width="520" height="520" fill="#eaf5fb"/>
+  <ellipse cx="260" cy="420" rx="83" ry="20" fill="#203743" opacity=".13"/>
+  <path d="M225 79h70v54c30 19 42 49 42 88v165c0 31-19 50-50 50h-54c-31 0-50-19-50-50V221c0-39 12-69 42-88Z" fill="#f7fcff" stroke="#95bed3" stroke-width="9"/>
+  <rect x="218" y="71" width="84" height="35" rx="8" fill="#2f85b8"/>
+  <path d="M187 258h146v80H187Z" fill="#2f85b8"/>
+  <path d="M207 285c31-24 62 24 106 0" fill="none" stroke="#ffffff" stroke-width="9" stroke-linecap="round"/>
+  <path d="M215 153c44 24 87 24 130 0" fill="none" stroke="#bde3f4" stroke-width="7" stroke-linecap="round"/>
+</svg>

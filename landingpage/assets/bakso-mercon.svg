@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 520" role="img" aria-labelledby="title">
+  <title id="title">Bakso mercon</title>
+  <rect width="520" height="520" fill="#fff1e9"/>
+  <circle cx="118" cy="111" r="76" fill="#e44822" opacity=".18"/>
+  <ellipse cx="260" cy="390" rx="185" ry="38" fill="#34140c" opacity=".16"/>
+  <path d="M96 212h328c-8 116-61 179-164 179S104 328 96 212Z" fill="#ffffff" stroke="#ead6ce" stroke-width="10"/>
+  <ellipse cx="260" cy="212" rx="180" ry="62" fill="#fbfbf6" stroke="#ead6ce" stroke-width="10"/>
+  <ellipse cx="260" cy="213" rx="142" ry="41" fill="#cb6a3c"/>
+  <g fill="#7c4f34" stroke="#4e2b1b" stroke-width="6">
+    <circle cx="184" cy="191" r="42"/>
+    <circle cx="272" cy="177" r="44"/>
+    <circle cx="346" cy="207" r="38"/>
+  </g>
+  <g fill="#d9291b">
+    <path d="M149 142c28 6 40 24 31 53-27-4-41-24-31-53Z"/>
+    <path d="M318 139c30 7 42 27 32 56-28-5-42-27-32-56Z"/>
+    <path d="M245 226c28 6 39 25 30 52-27-4-39-24-30-52Z"/>
+  </g>
+  <g fill="none" stroke="#f6d96d" stroke-width="10" stroke-linecap="round">
+    <path d="M152 235c70-28 134 30 219-7"/>
+    <path d="M187 257c57 10 115 3 164-18"/>
+  </g>
+  <g fill="#3f8c57">
+    <ellipse cx="131" cy="214" rx="21" ry="8" transform="rotate(-24 131 214)"/>
+    <ellipse cx="382" cy="180" rx="22" ry="9" transform="rotate(24 382 180)"/>
+  </g>
+</svg>

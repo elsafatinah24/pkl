@@ -1,0 +1,437 @@
+const money = new Intl.NumberFormat("id-ID", {
+  style: "currency",
+  currency: "IDR",
+  maximumFractionDigits: 0,
+});
+
+const menus = [
+  {
+    id: "bakso-urat",
+    name: "Bakso Urat",
+    category: "Bakso",
+    price: 18000,
+    stock: 18,
+    spice: "Sedang",
+    description: "Bakso urat besar dengan mie kuning, bihun, sayur, dan kuah kaldu.",
+    image: "assets/bakso-urat.svg",
+  },
+  {
+    id: "bakso-telur",
+    name: "Bakso Telur",
+    category: "Bakso",
+    price: 20000,
+    stock: 12,
+    spice: "Original",
+    description: "Bakso isi telur dengan kuah gurih dan taburan bawang goreng.",
+    image: "assets/bakso-telur.svg",
+  },
+  {
+    id: "bakso-mercon",
+    name: "Bakso Mercon",
+    category: "Bakso",
+    price: 22000,
+    stock: 9,
+    spice: "Mercon",
+    description: "Bakso isi cabai untuk pelanggan yang suka rasa pedas kuat.",
+    image: "assets/bakso-mercon.svg",
+  },
+  {
+    id: "bakso-campur",
+    name: "Bakso Campur",
+    category: "Paket",
+    price: 26000,
+    stock: 15,
+    spice: "Sedang",
+    description: "Paket lengkap bakso halus, urat, tahu, pangsit, dan mie.",
+    image: "assets/bakso-campur.svg",
+  },
+  {
+    id: "mie-ayam-bakso",
+    name: "Mie Ayam Bakso",
+    category: "Mie",
+    price: 21000,
+    stock: 20,
+    spice: "Original",
+    description: "Mie ayam manis gurih dengan tambahan bakso dan pangsit kering.",
+    image: "assets/mie-ayam-bakso.svg",
+  },
+  {
+    id: "es-teh",
+    name: "Es Teh Manis",
+    category: "Minuman",
+    price: 5000,
+    stock: 40,
+    spice: "Dingin",
+    customizable: false,
+    description: "Teh manis dingin untuk menyeimbangkan kuah bakso yang gurih.",
+    image: "assets/es-teh.svg",
+  },
+  {
+    id: "es-jeruk",
+    name: "Es Jeruk",
+    category: "Minuman",
+    price: 7000,
+    stock: 28,
+    spice: "Dingin",
+    customizable: false,
+    description: "Jeruk peras dingin yang segar untuk teman makan bakso pedas.",
+    image: "assets/es-jeruk.svg",
+  },
+  {
+    id: "teh-hangat",
+    name: "Teh Hangat",
+    category: "Minuman",
+    price: 4000,
+    stock: 35,
+    spice: "Hangat",
+    customizable: false,
+    description: "Teh manis hangat sederhana untuk pelanggan yang tidak ingin minuman dingin.",
+    image: "assets/teh-hangat.svg",
+  },
+  {
+    id: "air-mineral",
+    name: "Air Mineral",
+    category: "Minuman",
+    price: 5000,
+    stock: 50,
+    spice: "Botol",
+    customizable: false,
+    description: "Air mineral botol untuk pilihan minuman yang ringan dan netral.",
+    image: "assets/air-mineral.svg",
+  },
+];
+
+let activeCategory = "Semua";
+let cart = [];
+let orders = JSON.parse(localStorage.getItem("baksoOrders") || "[]");
+
+const menuGrid = document.querySelector("#menuGrid");
+const categoryTabs = document.querySelector("#categoryTabs");
+const searchInput = document.querySelector("#searchInput");
+const cartItems = document.querySelector("#cartItems");
+const cartTotal = document.querySelector("#cartTotal");
+const checkoutForm = document.querySelector("#checkoutForm");
+const customerOrders = document.querySelector("#customerOrders");
+const adminOrders = document.querySelector("#adminOrders");
+const stockList = document.querySelector("#stockList");
+
+function formatMoney(value) {
+  return money.format(value);
+}
+
+function saveOrders() {
+  localStorage.setItem("baksoOrders", JSON.stringify(orders));
+}
+
+function getCategories() {
+  return ["Semua", ...new Set(menus.map((menu) => menu.category))];
+}
+
+function renderCategories() {
+  categoryTabs.innerHTML = "";
+  getCategories().forEach((category) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `category-btn${category === activeCategory ? " active" : ""}`;
+    button.textContent = category;
+    button.addEventListener("click", () => {
+      activeCategory = category;
+      renderCategories();
+      renderMenus();
+    });
+    categoryTabs.append(button);
+  });
+}
+
+function renderMenus() {
+  const query = searchInput.value.trim().toLowerCase();
+  const filtered = menus.filter((menu) => {
+    const matchCategory = activeCategory === "Semua" || menu.category === activeCategory;
+    const matchQuery = menu.name.toLowerCase().includes(query);
+    return matchCategory && matchQuery;
+  });
+
+  menuGrid.innerHTML = "";
+  const template = document.querySelector("#menuCardTemplate");
+
+  filtered.forEach((menu) => {
+    const node = template.content.cloneNode(true);
+    const card = node.querySelector(".menu-card");
+    card.dataset.id = menu.id;
+    node.querySelector("img").src = menu.image;
+    node.querySelector("img").alt = menu.name;
+    node.querySelector("h3").textContent = menu.name;
+    node.querySelector(".price").textContent = formatMoney(menu.price);
+    node.querySelector(".description").textContent = menu.description;
+    node.querySelector(".meta-row").innerHTML = `
+      <span class="pill">${menu.category}</span>
+      <span class="pill ${menu.spice === "Mercon" ? "hot" : ""}">${menu.spice}</span>
+      <span class="pill">Stok ${menu.stock}</span>
+    `;
+    if (menu.customizable === false) {
+      node.querySelector(".spice-select").closest("label").classList.add("is-hidden");
+      node.querySelector(".topping-select").closest("label").classList.add("is-hidden");
+    }
+    node.querySelector(".add-btn").addEventListener("click", () => addToCart(card, menu));
+    menuGrid.append(node);
+  });
+}
+
+function addToCart(card, menu) {
+  const spice = menu.customizable === false ? menu.spice : card.querySelector(".spice-select").value;
+  const toppingSelect = card.querySelector(".topping-select");
+  const topping = menu.customizable === false ? "Tanpa topping" : toppingSelect.value;
+  const toppingPrice = menu.customizable === false ? 0 : Number(toppingSelect.selectedOptions[0].dataset.price);
+  const note = card.querySelector(".note-input").value.trim();
+  const key = `${menu.id}-${spice}-${topping}-${note}`;
+  const existing = cart.find((item) => item.key === key);
+
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cart.push({
+      key,
+      menuId: menu.id,
+      name: menu.name,
+      price: menu.price,
+      topping,
+      toppingPrice,
+      spice,
+      note,
+      customizable: menu.customizable !== false,
+      qty: 1,
+    });
+  }
+
+  renderCart();
+}
+
+function itemOptionsText(item) {
+  const parts = item.customizable === false ? [item.spice] : [item.spice, item.topping];
+  if (item.note) parts.push(item.note);
+  return parts.join(" · ");
+}
+
+function cartSubtotal() {
+  return cart.reduce((sum, item) => sum + (item.price + item.toppingPrice) * item.qty, 0);
+}
+
+function renderCart() {
+  cartItems.innerHTML = "";
+
+  cart.forEach((item) => {
+    const row = document.createElement("article");
+    row.className = "cart-item";
+    row.innerHTML = `
+      <div class="cart-line">
+        <strong>${item.name}</strong>
+        <span>${formatMoney((item.price + item.toppingPrice) * item.qty)}</span>
+      </div>
+      <p class="muted">${itemOptionsText(item)}</p>
+      <div class="qty-controls">
+        <button type="button" data-action="minus">-</button>
+        <strong>${item.qty}</strong>
+        <button type="button" data-action="plus">+</button>
+      </div>
+    `;
+
+    row.querySelector('[data-action="minus"]').addEventListener("click", () => {
+      item.qty -= 1;
+      if (item.qty <= 0) {
+        cart = cart.filter((cartItem) => cartItem.key !== item.key);
+      }
+      renderCart();
+    });
+
+    row.querySelector('[data-action="plus"]').addEventListener("click", () => {
+      item.qty += 1;
+      renderCart();
+    });
+
+    cartItems.append(row);
+  });
+
+  cartTotal.textContent = formatMoney(cartSubtotal());
+}
+
+function statusClass(status) {
+  if (status === "Selesai") return "done";
+  if (status === "Diproses") return "cooking";
+  return "waiting";
+}
+
+function renderOrders() {
+  customerOrders.innerHTML = "";
+  adminOrders.innerHTML = "";
+
+  orders.forEach((order) => {
+    const itemsText = order.items
+      .map((item) => `${item.qty}x ${item.name} (${itemOptionsText(item)})`)
+      .join(", ");
+    const orderNode = document.createElement("article");
+    orderNode.className = "order-item";
+    orderNode.innerHTML = `
+      <div class="order-line">
+        <div>
+          <strong>${order.number} · ${order.customer}</strong>
+          <p class="muted">${order.service} · ${order.detail} · ${order.payment}</p>
+        </div>
+        <span class="status ${statusClass(order.status)}">${order.status}</span>
+      </div>
+      <p class="muted">${itemsText}</p>
+      <div class="order-line">
+        <strong>${formatMoney(order.total)}</strong>
+        <span>${order.createdAt}</span>
+      </div>
+    `;
+    customerOrders.append(orderNode.cloneNode(true));
+
+    const adminNode = orderNode.cloneNode(true);
+    const actions = document.createElement("div");
+    actions.className = "order-actions";
+    ["Menunggu", "Diproses", "Selesai"].forEach((status) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = status;
+      button.addEventListener("click", () => {
+        order.status = status;
+        saveOrders();
+        renderAll();
+      });
+      actions.append(button);
+    });
+    adminNode.append(actions);
+    adminOrders.append(adminNode);
+  });
+
+  renderStats();
+}
+
+function renderStocks() {
+  stockList.innerHTML = "";
+  menus.forEach((menu) => {
+    const sold = orders.reduce((sum, order) => {
+      return sum + order.items
+        .filter((item) => item.menuId === menu.id)
+        .reduce((itemSum, item) => itemSum + item.qty, 0);
+    }, 0);
+    const remaining = Math.max(menu.stock - sold, 0);
+    const row = document.createElement("article");
+    row.className = "stock-item";
+    row.innerHTML = `
+      <div class="stock-line">
+        <strong>${menu.name}</strong>
+        <span class="pill ${remaining <= 5 ? "hot" : ""}">${remaining} tersedia</span>
+      </div>
+      <p class="muted">Terjual ${sold} porsi</p>
+    `;
+    stockList.append(row);
+  });
+}
+
+function renderStats() {
+  const revenue = orders.reduce((sum, order) => sum + order.total, 0);
+  const soldMap = new Map();
+  orders.forEach((order) => {
+    order.items.forEach((item) => {
+      soldMap.set(item.name, (soldMap.get(item.name) || 0) + item.qty);
+    });
+  });
+  const bestSeller = [...soldMap.entries()].sort((a, b) => b[1] - a[1])[0];
+
+  document.querySelector("#statOrders").textContent = orders.length;
+  document.querySelector("#statRevenue").textContent = formatMoney(revenue);
+  document.querySelector("#statBestSeller").textContent = bestSeller ? bestSeller[0] : "-";
+  document.querySelector("#heroTotal").textContent = `${orders.filter((order) => order.status !== "Selesai").length} pesanan aktif`;
+}
+
+function renderAll() {
+  renderMenus();
+  renderCart();
+  renderOrders();
+  renderStocks();
+}
+
+function createOrder(payload) {
+  const timestamp = new Date();
+  const number = `BKS-${String(timestamp.getTime()).slice(-6)}`;
+  orders.unshift({
+    number,
+    status: "Menunggu",
+    createdAt: timestamp.toLocaleString("id-ID", {
+      day: "2-digit",
+      month: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
+    ...payload,
+  });
+  saveOrders();
+}
+
+checkoutForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  if (!cart.length) {
+    alert("Keranjang masih kosong.");
+    return;
+  }
+
+  createOrder({
+    customer: document.querySelector("#customerName").value.trim(),
+    service: document.querySelector("#serviceType").value,
+    detail: document.querySelector("#serviceDetail").value.trim(),
+    payment: document.querySelector("#paymentMethod").value,
+    items: cart.map((item) => ({ ...item })),
+    total: cartSubtotal(),
+  });
+
+  cart = [];
+  checkoutForm.reset();
+  renderAll();
+  switchView("orders");
+});
+
+document.querySelector("#clearCartBtn").addEventListener("click", () => {
+  cart = [];
+  renderCart();
+});
+
+document.querySelector("#seedOrderBtn").addEventListener("click", () => {
+  createOrder({
+    customer: "Contoh Pelanggan",
+    service: "Dine-in",
+    detail: "Meja 07",
+    payment: "Tunai",
+    items: [
+      {
+        menuId: "bakso-urat",
+        name: "Bakso Urat",
+        price: 18000,
+        topping: "Pangsit",
+        toppingPrice: 3000,
+        spice: "Sedang",
+        note: "Kuah panas",
+        qty: 2,
+      },
+    ],
+    total: 42000,
+  });
+  renderAll();
+});
+
+function switchView(view) {
+  document.querySelectorAll(".view").forEach((element) => element.classList.remove("active"));
+  document.querySelectorAll(".nav-btn").forEach((button) => button.classList.remove("active"));
+  document.querySelector(`#${view}View`).classList.add("active");
+  document.querySelector(`[data-view="${view}"]`).classList.add("active");
+}
+
+document.querySelectorAll(".nav-btn").forEach((button) => {
+  button.addEventListener("click", () => switchView(button.dataset.view));
+});
+
+searchInput.addEventListener("input", renderMenus);
+
+renderCategories();
+renderAll();
