@@ -172,6 +172,17 @@ function renderMenus() {
       node.querySelector(".spice-select").closest("label").classList.add("is-hidden");
       node.querySelector(".topping-select").closest("label").classList.add("is-hidden");
     }
+
+    const noteInput = node.querySelector(".note-input");
+    const noteLabel = noteInput.closest("label");
+    if (menu.category === "Minuman") {
+      noteLabel.firstChild.textContent = "Catatan minuman";
+      noteInput.placeholder = "Tanpa es, gula sedikit";
+    } else {
+      noteLabel.firstChild.textContent = "Catatan makanan";
+      noteInput.placeholder = "Kuah dipisah, tanpa seledri";
+    }
+
     node.querySelector(".add-btn").addEventListener("click", () => addToCart(card, menu));
     menuGrid.append(node);
   });
