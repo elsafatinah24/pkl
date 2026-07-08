@@ -214,10 +214,12 @@ function renderMenus() {
     node.querySelector("h3").textContent = menu.name;
     node.querySelector(".price").textContent = formatMoney(menu.price);
     node.querySelector(".description").textContent = menu.description;
+    const stockLabel = available === 0 ? "Stok Habis" : `Stok ${available}`;
+    const stockClass = available === 0 ? "sold-out" : available <= 5 ? "hot" : "";
     node.querySelector(".meta-row").innerHTML = `
       <span class="pill">${menu.category}</span>
       <span class="pill ${menu.spice === "Mercon" ? "hot" : ""}">${menu.spice}</span>
-      <span class="pill ${available <= 5 ? "hot" : ""}">Stok ${available}</span>
+      <span class="pill ${stockClass}">${stockLabel}</span>
     `;
     if (menu.customizable === false) {
       node.querySelector(".spice-select").closest("label").classList.add("is-hidden");
@@ -238,6 +240,7 @@ function renderMenus() {
     if (!available) {
       addButton.disabled = true;
       addButton.textContent = getStock(menu.id) ? "Batas Stok" : "Stok Habis";
+      addButton.setAttribute("aria-disabled", "true");
       card.classList.add("is-unavailable");
     }
     addButton.addEventListener("click", () => addToCart(card, menu));
