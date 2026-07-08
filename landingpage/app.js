@@ -415,7 +415,7 @@ function renderStocks() {
         <strong>${menu.name}</strong>
         <span class="pill ${currentStock <= 5 ? "hot" : ""}">${currentStock} tersedia</span>
       </div>
-      <p class="muted">Terjual ${sold} porsi. Stok awal demo ${menu.stock} porsi.</p>
+      <p class="muted">Terjual ${sold} porsi. Stok awal  ${menu.stock} porsi.</p>
       <div class="stock-controls">
         <input type="number" min="0" value="${currentStock}" aria-label="Stok ${menu.name}" />
       </div>
