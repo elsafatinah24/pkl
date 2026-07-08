@@ -101,9 +101,11 @@ const menus = [
   },
 ];
 
+const statusSteps = ["Menunggu", "Diproses", "Selesai"];
 let activeCategory = "Semua";
 let cart = [];
 let orders = JSON.parse(localStorage.getItem("baksoOrders") || "[]");
+let stocks = loadStocks();
 
 const menuGrid = document.querySelector("#menuGrid");
 const categoryTabs = document.querySelector("#categoryTabs");
@@ -121,6 +123,54 @@ function formatMoney(value) {
 
 function saveOrders() {
   localStorage.setItem("baksoOrders", JSON.stringify(orders));
+}
+
+function loadStocks() {
+  const savedRaw = localStorage.getItem("baksoStocks");
+  const savedStocks = JSON.parse(savedRaw || "{}");
+  return menus.reduce((result, menu) => {
+    if (Number.isFinite(savedStocks[menu.id])) {
+      result[menu.id] = savedStocks[menu.id];
+      return result;
+    }
+
+    const sold = savedRaw
+      ? 0
+      : orders.reduce((sum, order) => {
+          return sum + order.items
+            .filter((item) => item.menuId === menu.id)
+            .reduce((itemSum, item) => itemSum + item.qty, 0);
+        }, 0);
+    result[menu.id] = Math.max(menu.stock - sold, 0);
+    return result;
+  }, {});
+}
+
+function saveStocks() {
+  localStorage.setItem("baksoStocks", JSON.stringify(stocks));
+}
+
+function getStock(menuId) {
+  return stocks[menuId] || 0;
+}
+
+function getCartQty(menuId) {
+  return cart
+    .filter((item) => item.menuId === menuId)
+    .reduce((sum, item) => sum + item.qty, 0);
+}
+
+function getAvailableStock(menuId) {
+  return Math.max(getStock(menuId) - getCartQty(menuId), 0);
+}
+
+function validateCartStock() {
+  const requested = new Map();
+  cart.forEach((item) => {
+    requested.set(item.menuId, (requested.get(item.menuId) || 0) + item.qty);
+  });
+
+  return [...requested.entries()].filter(([menuId, qty]) => qty > getStock(menuId));
 }
 
 function getCategories() {
@@ -155,6 +205,7 @@ function renderMenus() {
   const template = document.querySelector("#menuCardTemplate");
 
   filtered.forEach((menu) => {
+    const available = getAvailableStock(menu.id);
     const node = template.content.cloneNode(true);
     const card = node.querySelector(".menu-card");
     card.dataset.id = menu.id;
@@ -166,7 +217,7 @@ function renderMenus() {
     node.querySelector(".meta-row").innerHTML = `
       <span class="pill">${menu.category}</span>
       <span class="pill ${menu.spice === "Mercon" ? "hot" : ""}">${menu.spice}</span>
-      <span class="pill">Stok ${menu.stock}</span>
+      <span class="pill ${available <= 5 ? "hot" : ""}">Stok ${available}</span>
     `;
     if (menu.customizable === false) {
       node.querySelector(".spice-select").closest("label").classList.add("is-hidden");
@@ -183,12 +234,23 @@ function renderMenus() {
       noteInput.placeholder = "Kuah dipisah, tanpa seledri";
     }
 
-    node.querySelector(".add-btn").addEventListener("click", () => addToCart(card, menu));
+    const addButton = node.querySelector(".add-btn");
+    if (!available) {
+      addButton.disabled = true;
+      addButton.textContent = getStock(menu.id) ? "Batas Stok" : "Stok Habis";
+      card.classList.add("is-unavailable");
+    }
+    addButton.addEventListener("click", () => addToCart(card, menu));
     menuGrid.append(node);
   });
 }
 
 function addToCart(card, menu) {
+  if (getAvailableStock(menu.id) <= 0) {
+    alert(`${menu.name} sudah habis atau jumlah di keranjang sudah mencapai stok tersedia.`);
+    return;
+  }
+
   const spice = menu.customizable === false ? menu.spice : card.querySelector(".spice-select").value;
   const toppingSelect = card.querySelector(".topping-select");
   const topping = menu.customizable === false ? "Tanpa topping" : toppingSelect.value;
@@ -215,6 +277,7 @@ function addToCart(card, menu) {
   }
 
   renderCart();
+  renderMenus();
 }
 
 function itemOptionsText(item) {
@@ -252,11 +315,20 @@ function renderCart() {
         cart = cart.filter((cartItem) => cartItem.key !== item.key);
       }
       renderCart();
+      renderMenus();
     });
 
-    row.querySelector('[data-action="plus"]').addEventListener("click", () => {
+    const plusButton = row.querySelector('[data-action="plus"]');
+    plusButton.disabled = getAvailableStock(item.menuId) <= 0;
+    plusButton.title = plusButton.disabled ? "Stok menu sudah mencapai batas" : "Tambah jumlah";
+    plusButton.addEventListener("click", () => {
+      if (getAvailableStock(item.menuId) <= 0) {
+        alert(`Stok ${item.name} tidak cukup untuk menambah jumlah.`);
+        return;
+      }
       item.qty += 1;
       renderCart();
+      renderMenus();
     });
 
     cartItems.append(row);
@@ -279,6 +351,13 @@ function renderOrders() {
     const itemsText = order.items
       .map((item) => `${item.qty}x ${item.name} (${itemOptionsText(item)})`)
       .join(", ");
+    const stepMarkup = statusSteps
+      .map((status, index) => {
+        const currentIndex = statusSteps.indexOf(order.status);
+        const stateClass = index <= currentIndex ? "active" : "";
+        return `<span class="mini-step ${stateClass}">${status}</span>`;
+      })
+      .join("");
     const orderNode = document.createElement("article");
     orderNode.className = "order-item";
     orderNode.innerHTML = `
@@ -290,6 +369,7 @@ function renderOrders() {
         <span class="status ${statusClass(order.status)}">${order.status}</span>
       </div>
       <p class="muted">${itemsText}</p>
+      <div class="mini-flow">${stepMarkup}</div>
       <div class="order-line">
         <strong>${formatMoney(order.total)}</strong>
         <span>${order.createdAt}</span>
@@ -300,10 +380,11 @@ function renderOrders() {
     const adminNode = orderNode.cloneNode(true);
     const actions = document.createElement("div");
     actions.className = "order-actions";
-    ["Menunggu", "Diproses", "Selesai"].forEach((status) => {
+    statusSteps.forEach((status) => {
       const button = document.createElement("button");
       button.type = "button";
       button.textContent = status;
+      if (order.status === status) button.classList.add("active");
       button.addEventListener("click", () => {
         order.status = status;
         saveOrders();
@@ -326,16 +407,31 @@ function renderStocks() {
         .filter((item) => item.menuId === menu.id)
         .reduce((itemSum, item) => itemSum + item.qty, 0);
     }, 0);
-    const remaining = Math.max(menu.stock - sold, 0);
     const row = document.createElement("article");
     row.className = "stock-item";
+    const currentStock = getStock(menu.id);
     row.innerHTML = `
       <div class="stock-line">
         <strong>${menu.name}</strong>
-        <span class="pill ${remaining <= 5 ? "hot" : ""}">${remaining} tersedia</span>
+        <span class="pill ${currentStock <= 5 ? "hot" : ""}">${currentStock} tersedia</span>
       </div>
-      <p class="muted">Terjual ${sold} porsi</p>
+      <p class="muted">Terjual ${sold} porsi. Stok awal demo ${menu.stock} porsi.</p>
+      <div class="stock-controls">
+        <button type="button" data-action="minus">-</button>
+        <input type="number" min="0" value="${currentStock}" aria-label="Stok ${menu.name}" />
+        <button type="button" data-action="plus">+</button>
+      </div>
     `;
+
+    const input = row.querySelector("input");
+    const updateStock = (value) => {
+      stocks[menu.id] = Math.max(Number(value) || 0, 0);
+      saveStocks();
+      renderAll();
+    };
+    row.querySelector('[data-action="minus"]').addEventListener("click", () => updateStock(currentStock - 1));
+    row.querySelector('[data-action="plus"]').addEventListener("click", () => updateStock(currentStock + 1));
+    input.addEventListener("change", () => updateStock(input.value));
     stockList.append(row);
   });
 }
@@ -364,6 +460,11 @@ function renderAll() {
 }
 
 function createOrder(payload) {
+  payload.items.forEach((item) => {
+    stocks[item.menuId] = Math.max(getStock(item.menuId) - item.qty, 0);
+  });
+  saveStocks();
+
   const timestamp = new Date();
   const number = `BKS-${String(timestamp.getTime()).slice(-6)}`;
   orders.unshift({
@@ -388,6 +489,16 @@ checkoutForm.addEventListener("submit", (event) => {
     return;
   }
 
+  const stockErrors = validateCartStock();
+  if (stockErrors.length) {
+    const names = stockErrors
+      .map(([menuId]) => menus.find((menu) => menu.id === menuId)?.name || menuId)
+      .join(", ");
+    alert(`Stok tidak cukup untuk: ${names}. Kurangi jumlah pesanan atau edit stok di admin.`);
+    renderAll();
+    return;
+  }
+
   createOrder({
     customer: document.querySelector("#customerName").value.trim(),
     service: document.querySelector("#serviceType").value,
@@ -405,7 +516,7 @@ checkoutForm.addEventListener("submit", (event) => {
 
 document.querySelector("#clearCartBtn").addEventListener("click", () => {
   cart = [];
-  renderCart();
+  renderAll();
 });
 
 document.querySelector("#seedOrderBtn").addEventListener("click", () => {
