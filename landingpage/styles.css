@@ -254,7 +254,7 @@ label select:focus {
 .order-item,
 .stock-item,
 .stat-box {
-  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, opacity 160ms ease;
 }
 
 .menu-card:hover,
@@ -275,6 +275,17 @@ label select:focus {
 
 .menu-card.is-unavailable img {
   filter: grayscale(1);
+}
+
+.menu-card.is-unavailable {
+  border-color: #ead1cb;
+  opacity: 0.72;
+}
+
+.menu-card.is-unavailable:hover {
+  border-color: #ead1cb;
+  box-shadow: var(--soft-shadow);
+  transform: none;
 }
 
 .menu-card.is-unavailable .menu-card-body {
@@ -367,6 +378,11 @@ label select:focus {
   color: var(--accent-dark);
 }
 
+.pill.sold-out {
+  background: #ffe2df;
+  color: #b42318;
+}
+
 label {
   display: grid;
   gap: 6px;
@@ -409,6 +425,13 @@ label {
 .primary-btn:hover {
   box-shadow: 0 14px 28px rgba(215, 71, 31, 0.28);
   transform: translateY(-1px);
+}
+
+.primary-btn:disabled,
+.primary-btn:disabled:hover {
+  background: #b9b0a7;
+  box-shadow: none;
+  transform: none;
 }
 
 .add-btn {
