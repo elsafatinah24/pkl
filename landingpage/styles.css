@@ -18,7 +18,9 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--bg);
+  background:
+    linear-gradient(180deg, #fff9f1 0%, var(--bg) 320px),
+    var(--bg);
   color: var(--ink);
   font-family: Arial, Helvetica, sans-serif;
 }
@@ -125,6 +127,7 @@ main {
   overflow: hidden;
   border-radius: 8px;
   background: #101418;
+  box-shadow: var(--shadow);
 }
 
 .hero-strip img {
@@ -220,6 +223,22 @@ label select {
   border-radius: 8px;
   background: var(--surface);
   box-shadow: var(--shadow);
+}
+
+.menu-card,
+.order-item,
+.stock-item,
+.stat-box {
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.menu-card:hover,
+.order-item:hover,
+.stock-item:hover,
+.stat-box:hover {
+  border-color: rgba(194, 59, 34, 0.32);
+  box-shadow: 0 18px 42px rgba(31, 37, 40, 0.14);
+  transform: translateY(-2px);
 }
 
 .menu-card {
@@ -462,14 +481,19 @@ label {
 
 .flow-panel {
   margin-bottom: 18px;
-  padding: 12px;
+  padding: 14px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: var(--surface);
+  background: linear-gradient(135deg, #ffffff 0%, #fff3e8 100%);
   box-shadow: var(--shadow);
 }
 
+.admin-flow {
+  margin-top: -4px;
+}
+
 .flow-step {
+  position: relative;
   display: flex;
   min-height: 46px;
   flex: 1;
@@ -480,6 +504,15 @@ label {
   background: #fbfbf8;
   color: var(--muted);
   font-weight: 800;
+}
+
+.flow-step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: -12px;
+  width: 16px;
+  height: 2px;
+  background: var(--accent);
 }
 
 .flow-step strong {
@@ -526,21 +559,16 @@ label {
   margin-top: 12px;
 }
 
-.stock-controls button,
 .stock-controls input {
-  min-height: 38px;
+  min-height: 40px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #fff;
   font-weight: 800;
 }
 
-.stock-controls button {
-  width: 38px;
-}
-
 .stock-controls input {
-  width: 92px;
+  width: 100%;
   padding: 0 10px;
   text-align: center;
 }
@@ -556,6 +584,7 @@ label {
   display: grid;
   gap: 8px;
   padding: 18px;
+  border-top: 4px solid var(--accent);
 }
 
 .stat-box span {
@@ -613,6 +642,10 @@ label {
   .flow-panel {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .flow-step:not(:last-child)::after {
+    display: none;
   }
 
   .menu-card {
