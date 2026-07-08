@@ -1,14 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 520" role="img" aria-labelledby="title">
   <title id="title">Es teh manis</title>
   <rect width="520" height="520" fill="#f2efe8"/>
-  <ellipse cx="260" cy="420" rx="100" ry="22" fill="#3a2b18" opacity=".14"/>
-  <path d="M180 112h160l-22 291H202Z" fill="#f8fbff" stroke="#b9cad4" stroke-width="9"/>
-  <path d="M195 210h130l-15 174H210Z" fill="#b87326" opacity=".86"/>
-  <path d="M202 178h116" stroke="#8d5a25" stroke-width="12" stroke-linecap="round"/>
-  <g fill="#e8f6ff" stroke="#b9cad4" stroke-width="5">
-    <rect x="210" y="135" width="38" height="34" rx="8" transform="rotate(-12 229 152)"/>
-    <rect x="261" y="147" width="38" height="34" rx="8" transform="rotate(11 280 164)"/>
+  <g transform="translate(260 260) scale(1.14) translate(-260 -260)">
+    <ellipse cx="260" cy="420" rx="100" ry="22" fill="#3a2b18" opacity=".14"/>
+    <path d="M180 112h160l-22 291H202Z" fill="#f8fbff" stroke="#b9cad4" stroke-width="9"/>
+    <path d="M195 210h130l-15 174H210Z" fill="#b87326" opacity=".86"/>
+    <path d="M202 178h116" stroke="#8d5a25" stroke-width="12" stroke-linecap="round"/>
+    <g fill="#e8f6ff" stroke="#b9cad4" stroke-width="5">
+      <rect x="210" y="135" width="38" height="34" rx="8" transform="rotate(-12 229 152)"/>
+      <rect x="261" y="147" width="38" height="34" rx="8" transform="rotate(11 280 164)"/>
+    </g>
+    <path d="M333 103l47-62" stroke="#7e4a1d" stroke-width="12" stroke-linecap="round"/>
+    <circle cx="384" cy="36" r="17" fill="#f1c84f"/>
   </g>
-  <path d="M333 103l47-62" stroke="#7e4a1d" stroke-width="12" stroke-linecap="round"/>
-  <circle cx="384" cy="36" r="17" fill="#f1c84f"/>
 </svg>
