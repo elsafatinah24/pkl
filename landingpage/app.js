@@ -417,9 +417,7 @@ function renderStocks() {
       </div>
       <p class="muted">Terjual ${sold} porsi. Stok awal demo ${menu.stock} porsi.</p>
       <div class="stock-controls">
-        <button type="button" data-action="minus">-</button>
         <input type="number" min="0" value="${currentStock}" aria-label="Stok ${menu.name}" />
-        <button type="button" data-action="plus">+</button>
       </div>
     `;
 
@@ -429,8 +427,6 @@ function renderStocks() {
       saveStocks();
       renderAll();
     };
-    row.querySelector('[data-action="minus"]').addEventListener("click", () => updateStock(currentStock - 1));
-    row.querySelector('[data-action="plus"]').addEventListener("click", () => updateStock(currentStock + 1));
     input.addEventListener("change", () => updateStock(input.value));
     stockList.append(row);
   });
@@ -516,29 +512,6 @@ checkoutForm.addEventListener("submit", (event) => {
 
 document.querySelector("#clearCartBtn").addEventListener("click", () => {
   cart = [];
-  renderAll();
-});
-
-document.querySelector("#seedOrderBtn").addEventListener("click", () => {
-  createOrder({
-    customer: "Contoh Pelanggan",
-    service: "Dine-in",
-    detail: "Meja 07",
-    payment: "Tunai",
-    items: [
-      {
-        menuId: "bakso-urat",
-        name: "Bakso Urat",
-        price: 18000,
-        topping: "Pangsit",
-        toppingPrice: 3000,
-        spice: "Sedang",
-        note: "Kuah panas",
-        qty: 2,
-      },
-    ],
-    total: 42000,
-  });
   renderAll();
 });
 
