@@ -106,10 +106,69 @@ let activeCategory = "Semua";
 let cart = [];
 let orders = JSON.parse(localStorage.getItem("baksoOrders") || "[]");
 let stocks = loadStocks();
+let currentUser = JSON.parse(localStorage.getItem("baksoUser") || "null");
 
+function setupAuthScaffold() {
+  const nav = document.querySelector(".top-actions");
+  const adminButton = document.querySelector('[data-view="admin"]');
+  const ordersHeading = document.querySelector("#ordersView .section-heading");
+
+  adminButton.classList.add("admin-only");
+  nav.insertAdjacentHTML(
+    "beforeend",
+    '<button class="nav-btn" id="logoutBtn" type="button">Keluar</button>',
+  );
+  ordersHeading.insertAdjacentHTML(
+    "beforeend",
+    '<div class="search-wrap"><input id="orderSearchInput" type="search" placeholder="Cari nama pelanggan" aria-label="Cari pesanan berdasarkan nama pelanggan" /></div>',
+  );
+  document.querySelector(".app-header").insertAdjacentHTML(
+    "afterend",
+    `
+      <section class="login-view" id="loginView" aria-labelledby="loginTitle">
+        <form class="login-panel" id="loginForm">
+          <div>
+            <p class="eyebrow">Masuk akun</p>
+            <h2 id="loginTitle">Login Pembeli atau Admin</h2>
+          </div>
+
+          <label>
+            Peran
+            <select id="loginRole">
+              <option value="buyer">Pembeli</option>
+              <option value="admin">Admin</option>
+            </select>
+          </label>
+
+          <label>
+            Nama
+            <input id="loginName" type="text" placeholder="Contoh: Rani" required />
+          </label>
+
+          <label id="loginPasswordLabel">
+            Password admin
+            <input id="loginPassword" type="password" placeholder="admin123" />
+          </label>
+
+          <button class="primary-btn" type="submit">Masuk</button>
+        </form>
+      </section>
+    `,
+  );
+}
+
+setupAuthScaffold();
+
+const loginForm = document.querySelector("#loginForm");
+const loginRole = document.querySelector("#loginRole");
+const loginName = document.querySelector("#loginName");
+const loginPassword = document.querySelector("#loginPassword");
+const loginPasswordLabel = document.querySelector("#loginPasswordLabel");
+const logoutBtn = document.querySelector("#logoutBtn");
 const menuGrid = document.querySelector("#menuGrid");
 const categoryTabs = document.querySelector("#categoryTabs");
 const searchInput = document.querySelector("#searchInput");
+const orderSearchInput = document.querySelector("#orderSearchInput");
 const cartItems = document.querySelector("#cartItems");
 const cartTotal = document.querySelector("#cartTotal");
 const checkoutForm = document.querySelector("#checkoutForm");
@@ -123,6 +182,23 @@ function formatMoney(value) {
 
 function saveOrders() {
   localStorage.setItem("baksoOrders", JSON.stringify(orders));
+}
+
+function saveCurrentUser(user) {
+  currentUser = user;
+  if (user) {
+    localStorage.setItem("baksoUser", JSON.stringify(user));
+  } else {
+    localStorage.removeItem("baksoUser");
+  }
+}
+
+function isAdmin() {
+  return currentUser?.role === "admin";
+}
+
+function normalizeText(value) {
+  return value.trim().toLowerCase();
 }
 
 function loadStocks() {
@@ -349,6 +425,41 @@ function statusClass(status) {
 function renderOrders() {
   customerOrders.innerHTML = "";
   adminOrders.innerHTML = "";
+  const orderQuery = normalizeText(orderSearchInput.value);
+  const customerVisibleOrders = orders.filter((order) => {
+    return !orderQuery || order.customer.toLowerCase().includes(orderQuery);
+  });
+
+  customerVisibleOrders.forEach((order) => {
+    const itemsText = order.items
+      .map((item) => `${item.qty}x ${item.name} (${itemOptionsText(item)})`)
+      .join(", ");
+    const stepMarkup = statusSteps
+      .map((status, index) => {
+        const currentIndex = statusSteps.indexOf(order.status);
+        const stateClass = index <= currentIndex ? "active" : "";
+        return `<span class="mini-step ${stateClass}">${status}</span>`;
+      })
+      .join("");
+    const orderNode = document.createElement("article");
+    orderNode.className = "order-item";
+    orderNode.innerHTML = `
+      <div class="order-line">
+        <div>
+          <strong>${order.number} · ${order.customer}</strong>
+          <p class="muted">${order.service} · ${order.detail} · ${order.payment}</p>
+        </div>
+        <span class="status ${statusClass(order.status)}">${order.status}</span>
+      </div>
+      <p class="muted">${itemsText}</p>
+      <div class="mini-flow">${stepMarkup}</div>
+      <div class="order-line">
+        <strong>${formatMoney(order.total)}</strong>
+        <span>${order.createdAt}</span>
+      </div>
+    `;
+    customerOrders.append(orderNode.cloneNode(true));
+  });
 
   orders.forEach((order) => {
     const itemsText = order.items
@@ -378,8 +489,6 @@ function renderOrders() {
         <span>${order.createdAt}</span>
       </div>
     `;
-    customerOrders.append(orderNode.cloneNode(true));
-
     const adminNode = orderNode.cloneNode(true);
     const actions = document.createElement("div");
     actions.className = "order-actions";
@@ -456,6 +565,7 @@ function renderAll() {
   renderCart();
   renderOrders();
   renderStocks();
+  renderAuthState();
 }
 
 function createOrder(payload) {
@@ -498,8 +608,9 @@ checkoutForm.addEventListener("submit", (event) => {
     return;
   }
 
+  const customerNameValue = document.querySelector("#customerName").value.trim();
   createOrder({
-    customer: document.querySelector("#customerName").value.trim(),
+    customer: customerNameValue,
     service: document.querySelector("#serviceType").value,
     detail: document.querySelector("#serviceDetail").value.trim(),
     payment: document.querySelector("#paymentMethod").value,
@@ -508,7 +619,13 @@ checkoutForm.addEventListener("submit", (event) => {
   });
 
   cart = [];
+  if (currentUser?.role === "buyer") {
+    orderSearchInput.value = customerNameValue;
+  }
   checkoutForm.reset();
+  if (currentUser?.role === "buyer") {
+    document.querySelector("#customerName").value = currentUser.name;
+  }
   renderAll();
   switchView("orders");
 });
@@ -519,17 +636,86 @@ document.querySelector("#clearCartBtn").addEventListener("click", () => {
 });
 
 function switchView(view) {
+  if (view === "admin" && !isAdmin()) {
+    alert("Halaman admin hanya bisa dibuka oleh admin.");
+    view = "menu";
+  }
+
   document.querySelectorAll(".view").forEach((element) => element.classList.remove("active"));
   document.querySelectorAll(".nav-btn").forEach((button) => button.classList.remove("active"));
   document.querySelector(`#${view}View`).classList.add("active");
   document.querySelector(`[data-view="${view}"]`).classList.add("active");
 }
 
-document.querySelectorAll(".nav-btn").forEach((button) => {
+document.querySelectorAll(".nav-btn[data-view]").forEach((button) => {
   button.addEventListener("click", () => switchView(button.dataset.view));
 });
 
 searchInput.addEventListener("input", renderMenus);
+orderSearchInput.addEventListener("input", renderOrders);
 
+function renderAuthState() {
+  const loggedIn = Boolean(currentUser);
+  document.body.classList.toggle("is-authenticated", loggedIn);
+  document.body.classList.toggle("is-admin", isAdmin());
+  document.querySelectorAll(".admin-only").forEach((element) => {
+    element.hidden = !isAdmin();
+  });
+  logoutBtn.hidden = !loggedIn;
+
+  if (!loggedIn) {
+    switchView("menu");
+    return;
+  }
+
+  if (!isAdmin() && document.querySelector("#adminView").classList.contains("active")) {
+    switchView("menu");
+  }
+}
+
+function updateLoginPasswordVisibility() {
+  const adminLogin = loginRole.value === "admin";
+  loginPasswordLabel.classList.toggle("is-hidden", !adminLogin);
+  loginPassword.required = adminLogin;
+}
+
+loginRole.addEventListener("change", updateLoginPasswordVisibility);
+
+loginForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const role = loginRole.value;
+  const name = loginName.value.trim();
+
+  if (role === "admin" && loginPassword.value !== "admin123") {
+    alert("Password admin salah.");
+    return;
+  }
+
+  saveCurrentUser({ role, name: name || (role === "admin" ? "Admin" : "Pembeli") });
+  if (role === "buyer") {
+    orderSearchInput.value = name;
+    document.querySelector("#customerName").value = name;
+  } else {
+    orderSearchInput.value = "";
+  }
+  loginForm.reset();
+  updateLoginPasswordVisibility();
+  renderAll();
+  switchView(role === "admin" ? "admin" : "menu");
+});
+
+logoutBtn.addEventListener("click", () => {
+  saveCurrentUser(null);
+  cart = [];
+  loginForm.reset();
+  updateLoginPasswordVisibility();
+  renderAll();
+});
+
+if (currentUser?.role === "buyer") {
+  orderSearchInput.value = currentUser.name;
+  document.querySelector("#customerName").value = currentUser.name;
+}
+updateLoginPasswordVisibility();
 renderCategories();
 renderAll();
