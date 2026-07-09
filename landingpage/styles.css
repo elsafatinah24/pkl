@@ -94,6 +94,33 @@ h3 {
   gap: 8px;
 }
 
+body:not(.is-authenticated) main,
+body:not(.is-authenticated) .top-actions {
+  display: none;
+}
+
+body.is-authenticated .login-view {
+  display: none;
+}
+
+.login-view {
+  min-height: calc(100vh - 86px);
+  display: grid;
+  place-items: center;
+  padding: 24px clamp(16px, 4vw, 56px);
+}
+
+.login-panel {
+  display: grid;
+  width: min(420px, 100%);
+  gap: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 254, 250, 0.97);
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+
 .nav-btn,
 .category-btn,
 .secondary-btn,
