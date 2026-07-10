@@ -142,12 +142,12 @@ function setupAuthScaffold() {
 
           <label>
             Nama
-            <input id="loginName" type="text" placeholder="Contoh: Rani" required />
+            <input id="loginName" type="text" placeholder="" required />
           </label>
 
           <label id="loginPasswordLabel">
             Password admin
-            <input id="loginPassword" type="password" placeholder="admin123" />
+            <input id="loginPassword" type="password" placeholder="" />
           </label>
 
           <button class="primary-btn" type="submit">Masuk</button>
